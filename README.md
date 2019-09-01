@@ -8,6 +8,8 @@ from condolock import ConditionalLock, ConditionalContext
 import redis
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
+
+# Conditional Lock checks that all of the following conditions are true before allowing usage
 lock = ConditionalLock(r)
 lock.add(MinTime(n=300)) # Wait 300 seconds before allowing for the next update
 lock.add(IsPrior(key="checking", time=300)) # Check to see if the key was worked on in a given amount of time, and that it was true.
