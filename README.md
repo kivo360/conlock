@@ -2,6 +2,7 @@
 
 Stop Redis race conditions in their tracks. `condolock` (standing for `Cond`itional `Lock`) is a distributed conditional lock library for python. Put repeatable conditions on keys and ensure they don't get changed before you say they're supposed to change. 
 
+
 **Match Conditions Before Changing**
 
 
@@ -64,6 +65,7 @@ from condolock.conditions import MinTime, AccessedPrior
 import redis
 
 item_key = 'd59be26104f84fca8dc78dbdf8d64763'
+# You might want to use environment variables in your project.
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
 # Conditional Lock checks that all of the following conditions are true before allowing usage
@@ -78,4 +80,24 @@ with ConditionContext(key=item_key lock=lock) as context:
 ```
 
 
-Inisde of the example you save yourself from getting the lock improperly done through manual code and make it shorter than the example above, even with .
+Inisde of the example you save yourself from getting the lock improperly done through manual code and make it shorter than the example above, even with.
+
+
+
+## How to install:
+
+```bash
+pip install condolock
+```
+
+## How All Timing Will Work
+
+All timing will use utc seconds epoch. Though all time based conditionals will allow you to determine the number of milliseconds, seconds, minutes and hours between the conditions you want to have happen. The docs will explain how each condition will work.
+
+
+
+
+## Condtions
+We'll explain all the various conditons inside of another lock.
+
+**[Coming Soon]**
