@@ -5,14 +5,18 @@ Stop Redis race conditions in their tracks. `condolock` (standing for `Cond`itio
 **Match Conditions Before Changing**
 
 
-This happens automatically like when using keras or some other strategy pattern.
+We're using a form of a strategy pattern to allow dynamically setting conditions for the lock.
 
 
 ### Manual Time Checking -- Modify Data After At Least N seconds have passed
 
-To understand why we'd want to create a replicatable lock. Let's run through a manual example. Lets say we want to save information only after 5 minutes have passed, any time before 600 seconds have passed is skipped. 5 minutes equals 600 seconds.
+To understand why we'd want to create a replicatable lock. Let's run through a manual example. Lets say we want to save information only after 5 minutes have passed, meaning any time we attempt to save before 600 seconds have passed is skipped. This is good to ensure that when multiple machines have a background scheduler to update a field inside of redis or any other location don't do so. 
 
 
+5 minutes equals 600 seconds. We provide a editing method for each.
+
+
+Here's the manual example. Assume that this code would be running on every possible machine inside of a background process or thread, to try updating the models available every few seconds.
 ```py
 import time
 import redis
@@ -72,3 +76,6 @@ with ConditionContext(key=item_key lock=lock) as context:
         raise ValueError
     # Do work here
 ```
+
+
+Inisde of the example you save yourself from getting the lock improperly done through manual code and make it shorter than the example above, even with .
