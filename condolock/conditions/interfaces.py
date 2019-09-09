@@ -35,6 +35,3 @@ class ConditionInstance(abc.ABCMeta):
             raise NotImplementedError("You should have set a redis instance by now.")
         if self.lock_name == "":
             raise NotImplementedError("This lock needs a name")
-    
-    def return_dict(self):
-        pass

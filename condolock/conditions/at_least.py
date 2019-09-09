@@ -50,7 +50,7 @@ class WaitAtLeast(ConditionInstance):
                     pass
                 else:
                     # Just work on the code without doing much extra work.
-                    self.return_logic.message = "The required conditions returns true"
+                    self.return_logic.message = "The required condition didn't pass"
                 return self.return_logic
             # Do work here.
 
@@ -73,4 +73,5 @@ class WaitAtLeast(ConditionInstance):
             self.redis_instance.Lock(self.combined_key_lock): 
                 # Update the information at the __init__
                 # self.redis_instance
+                # Get the time difference from now (dealta time)
                 pass

@@ -9,6 +9,7 @@ cloudpickle = "*"
 redis = "*"
 condolock = {editable = true, path = "."}
 loguru = "*"
+maya = "*"
 
 [dev-packages]
 
