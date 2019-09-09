@@ -8,6 +8,7 @@ econml = "*"
 cloudpickle = "*"
 redis = "*"
 condolock = {editable = true, path = "."}
+loguru = "*"
 
 [dev-packages]
 

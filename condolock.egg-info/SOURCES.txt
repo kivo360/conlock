@@ -9,4 +9,7 @@ condolock.egg-info/not-zip-safe
 condolock.egg-info/requires.txt
 condolock.egg-info/top_level.txt
 condolock/conditions/__init__.py
+condolock/conditions/accessed_prior.py
+condolock/conditions/at_least.py
 condolock/conditions/interfaces.py
+condolock/conditions/minimum_time.py

@@ -98,6 +98,6 @@ All timing will use utc seconds epoch. Though all time based conditionals will a
 
 
 ## Condtions
-We'll explain all the various conditons inside of another lock.
+We'll explain all the various conditons inside of other documents.
 
 **[Coming Soon]**

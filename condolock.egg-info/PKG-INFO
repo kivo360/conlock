@@ -97,6 +97,18 @@ Description: # Condolock
         ```bash
         pip install condolock
         ```
+        
+        ## How All Timing Will Work
+        
+        All timing will use utc seconds epoch. Though all time based conditionals will allow you to determine the number of milliseconds, seconds, minutes and hours between the conditions you want to have happen. The docs will explain how each condition will work.
+        
+        
+        
+        
+        ## Condtions
+        We'll explain all the various conditons inside of other documents.
+        
+        **[Coming Soon]**
 Platform: UNKNOWN
 Classifier: Environment :: Distributed Systems
 Classifier: Intended Audience :: Developers

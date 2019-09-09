@@ -2,11 +2,20 @@ import abc
 from redis import Redis
 
 
+class RLLogic(object):
+    def __init__(self, *args, **kwargs):
+        self.__dict__['success'] = False
+        self.__dict__['message'] = "The logic doesn't meet prior conditions"
+
+    def __setattr__(self, name, value):
+        self.__dict__[name] = value
+
+
 class ConditionInstance(abc.ABCMeta):
     def __init__(self, *args, **kwargs):
         self.redis_instance = None
         self.lock_name = ""
-        self.require_prior = None
+        self.require_prior = False
 
     def check_exist(self, key:str) -> bool:
         """ Check if the key of the given name exists. If not, we return False"""
@@ -26,3 +35,6 @@ class ConditionInstance(abc.ABCMeta):
             raise NotImplementedError("You should have set a redis instance by now.")
         if self.lock_name == "":
             raise NotImplementedError("This lock needs a name")
+    
+    def return_dict(self):
+        pass
