@@ -10,6 +10,7 @@ redis = "*"
 loguru = "*"
 maya = "*"
 conlock = {editable = true, path = "."}
+pytest = "*"
 
 [dev-packages]
 

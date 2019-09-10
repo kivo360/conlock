@@ -1,11 +1,11 @@
-Metadata-Version: 1.2
+Metadata-Version: 2.1
 Name: conlock
-Version: 0.1
-Summary: A high-level Python Web framework that encourages rapid development and clean, pragmatic design.
+Version: 0.0.1
+Summary: A distributed lock with conditions.
 Home-page: UNKNOWN
 Author: Kevin Hill
 Author-email: kah.kevin.hill@gmail.com
-License: BSD
+License: UNKNOWN
 Description: # Conlock - A Distributed Lock ... with Conditions
         
         Stop Redis race conditions in their tracks. `conlock` (standing for `Con`ditional `Lock`) is a distributed conditional lock library for python. Put repeatable conditions on keys and ensure they don't get changed before you say they're supposed to change. 
@@ -68,34 +68,36 @@ Description: # Conlock - A Distributed Lock ... with Conditions
         With `CondoLock` this logic is simplified into a keras-like interface.
         
         ```py
-        from condolock import ConditionalLock, ConditionalContext
-        from condolock.conditions import MinTime, AccessedPrior
+        from conlock import ConditionalLock, ConditionalLockContext
+        from conlock.conditions import WaitAtLeast
         import redis
         
         item_key = 'd59be26104f84fca8dc78dbdf8d64763'
-        # You might want to use environment variables in your project.
-        r = redis.StrictRedis(host='localhost', port=6379, db=0)
         
-        # Conditional Lock checks that all of the following conditions are true before allowing usage
-        lock = ConditionalLock(r)
-        lock.add(MinTime(n=300)) # Wait 300 seconds before allowing for the next update
-        lock.add(AccessedPrior(key="checking", time=300)) # Check to see if the key was worked on in a given amount of time, and that it was true.
+        red_instance = Redis()
+        clock = ConditionalLock(red_instance)
+        clock.add(WaitAtLeast(seconds=10))
+        with ConditionalLockContext(key=item_key, lock=clock) as context:
+            context.update("Hello World")
         
-        with ConditionContext(key=item_key lock=lock) as context:
-            if context.success:
-                raise ValueError
-            # Do work here
+        with ConditionalLockContext(key=item_key, lock=clock):
+            context.update("Hello World")
+        
+        logger.debug("Sleeping like a boss.")
+        time.sleep(11)
+        with ConditionalLockContext(key=item_key, lock=clock):
+            context.update("Hello World")
         ```
         
         
         Inisde of the example you save yourself from getting the lock improperly done through manual code and make it shorter than the example above, even with.
         
-        
+        With this example the lock waits for a given time before allowing changes.
         
         ## How to install:
         
         ```bash
-        pip install condolock
+        pip install conlock
         ```
         
         ## How All Timing Will Work
@@ -110,14 +112,7 @@ Description: # Conlock - A Distributed Lock ... with Conditions
         
         **[Coming Soon]**
 Platform: UNKNOWN
-Classifier: Environment :: Distributed Systems
-Classifier: Intended Audience :: Developers
-Classifier: License :: OSI Approved :: BSD License
-Classifier: Operating System :: OS Independent
-Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
-Classifier: Programming Language :: Python :: 3.6
-Classifier: Programming Language :: Python :: 3.7
-Classifier: Programming Language :: Python :: 3 :: Only
-Classifier: Topic :: Internet :: Infrastructure
-Requires-Python: >=3.6
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Description-Content-Type: text/markdown

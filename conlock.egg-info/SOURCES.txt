@@ -5,7 +5,6 @@ conlock/main.py
 conlock.egg-info/PKG-INFO
 conlock.egg-info/SOURCES.txt
 conlock.egg-info/dependency_links.txt
-conlock.egg-info/not-zip-safe
 conlock.egg-info/requires.txt
 conlock.egg-info/top_level.txt
 conlock/conditions/__init__.py

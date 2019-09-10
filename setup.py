@@ -1,117 +1,66 @@
 import os
+import codecs
 import sys
-from distutils.sysconfig import get_python_lib
-
-from setuptools import find_packages, setup
-
-CURRENT_PYTHON = sys.version_info[:2]
-REQUIRED_PYTHON = (3, 6)
-
-# This check and everything above must remain compatible with Python 2.7.
-if CURRENT_PYTHON < REQUIRED_PYTHON:
-    sys.stderr.write("""
-==========================
-Unsupported Python version
-==========================
-
-This version of Conlock requires Python {}.{}, but you're trying to
-install it on Python {}.{}.
-
-This may be because you are using a version of pip that doesn't
-understand the python_requires classifier. Make sure you
-have pip >= 9.0 and setuptools >= 24.2, then try again:
-
-    $ python -m pip install --upgrade pip setuptools
-    $ python -m pip install django
-
-This will install the latest version of Django which works on your
-version of Python. If you can't upgrade your pip (or Python), request
-an older version of Django:
-
-    $ python -m pip install "django<2"
-""".format(*(REQUIRED_PYTHON + CURRENT_PYTHON)))
-    sys.exit(1)
+from shutil import rmtree
+from setuptools import setup, find_packages, Command
 
 
-# Warn if we are installing over top of an existing installation. This can
-# cause issues where files that were deleted from a more recent Django are
-# still present in site-packages. See #18115.
-overlay_warning = False
-existing_path = ""
-if "install" in sys.argv:
-    lib_paths = [get_python_lib()]
-    if lib_paths[0].startswith("/usr/lib/"):
-        # We have to try also with an explicit prefix of /usr/local in order to
-        # catch Debian's custom user site-packages directory.
-        lib_paths.append(get_python_lib(prefix="/usr/local"))
-    for lib_path in lib_paths:
-        existing_path = os.path.abspath(os.path.join(lib_path, "condolock"))
-        if os.path.exists(existing_path):
-            # We note the need for the warning here, but present it after the
-            # command is run, so it's more likely to be seen.
-            overlay_warning = True
-            break
+here = os.path.abspath(os.path.dirname(__file__))
 
 
-EXCLUDE_FROM_PACKAGES = ['tests']
+with open("README.md", "r") as fh:
+    long_description = fh.read()
 
+class UploadCommand(Command):
+    """Support setup.py publish."""
 
-# Dynamically calculate the version based on django.VERSION.
-version = 0.1
+    description = "Build and publish the package."
+    user_options = []
 
+    @staticmethod
+    def status(s):
+        """Prints things in bold."""
+        print("\033[1m{0}\033[0m".format(s))
 
-def read(fname):
-    with open(os.path.join(os.path.dirname(__file__), fname)) as f:
-        return f.read()
+    def initialize_options(self):
+        pass
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+        try:
+            self.status("Removing previous builds…")
+            rmtree(os.path.join(here, "dist"))
+        except FileNotFoundError:
+            pass
+        self.status("Building Source distribution…")
+        os.system("{0} setup.py sdist bdist_wheel".format(sys.executable))
+        self.status("Uploading the package to PyPi via Twine…")
+        os.system("sudo twine upload dist/*")
+        sys.exit()
+
 
 
 setup(
-    name='conlock',
-    version=version,
-    python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
-    author='Kevin Hill',
-    author_email='kah.kevin.hill@gmail.com',
-    description=('A high-level Python Web framework that encourages '
-                 'rapid development and clean, pragmatic design.'),
-    long_description=read('README.md'),
-    license='BSD',
-    packages=find_packages(exclude=EXCLUDE_FROM_PACKAGES),
-    include_package_data=True,
-    entry_points={},
-    install_requires=['redis'],
-    extras_require={},
-    zip_safe=False,
+    name="conlock",
+    version="0.0.1",
+    author="Kevin Hill",
+    author_email="kah.kevin.hill@gmail.com",
+    description="A distributed lock with conditions.",
+    long_description=long_description,
+    long_description_content_type="text/markdown",
+    py_modules=["conlock"],
+    install_requires=["redis", 'scipy', 'numpy', 'pandas', 'click', 'arctic', 
+        'toolz', 'dask', 'cloudpickle', 'dask[complete]', 
+        'dask[dataframe]', 'python-decouple', 'maya', 'crayons'
+    ], 
+    packages=find_packages(),
     classifiers=[
-        'Environment :: Distributed Systems',
-        'Intended Audience :: Developers',
-        'License :: OSI Approved :: BSD License',
-        'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
-        'Programming Language :: Python :: 3 :: Only',
-        'Topic :: Internet :: Infrastructure'
-    ]
+        "Programming Language :: Python :: 3",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+    ],
+    cmdclass={"upload": UploadCommand},
+    
 )
-
-
-if overlay_warning:
-    sys.stderr.write("""
-
-========
-WARNING!
-========
-
-You have just installed Django over top of an existing
-installation, without removing it first. Because of this,
-your install may now include extraneous files from a
-previous version that have since been removed from
-Django. This is known to cause a variety of problems. You
-should manually remove the
-
-%(existing_path)s
-
-directory and re-install Django.
-
-""" % {"existing_path": existing_path})

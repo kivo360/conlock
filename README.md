@@ -60,34 +60,36 @@ After we check to see if a key is available, we see if the time delta from the p
 With `CondoLock` this logic is simplified into a keras-like interface.
 
 ```py
-from condolock import ConditionalLock, ConditionalContext
-from condolock.conditions import MinTime, AccessedPrior
+from conlock import ConditionalLock, ConditionalLockContext
+from conlock.conditions import WaitAtLeast
 import redis
 
 item_key = 'd59be26104f84fca8dc78dbdf8d64763'
-# You might want to use environment variables in your project.
-r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
-# Conditional Lock checks that all of the following conditions are true before allowing usage
-lock = ConditionalLock(r)
-lock.add(MinTime(n=300)) # Wait 300 seconds before allowing for the next update
-lock.add(AccessedPrior(key="checking", time=300)) # Check to see if the key was worked on in a given amount of time, and that it was true.
+red_instance = Redis()
+clock = ConditionalLock(red_instance)
+clock.add(WaitAtLeast(seconds=10))
+with ConditionalLockContext(key=item_key, lock=clock) as context:
+    context.update("Hello World")
 
-with ConditionContext(key=item_key lock=lock) as context:
-    if context.success:
-        raise ValueError
-    # Do work here
+with ConditionalLockContext(key=item_key, lock=clock):
+    context.update("Hello World")
+
+logger.debug("Sleeping like a boss.")
+time.sleep(11)
+with ConditionalLockContext(key=item_key, lock=clock):
+    context.update("Hello World")
 ```
 
 
 Inisde of the example you save yourself from getting the lock improperly done through manual code and make it shorter than the example above, even with.
 
-
+With this example the lock waits for a given time before allowing changes.
 
 ## How to install:
 
 ```bash
-pip install condolock
+pip install conlock
 ```
 
 ## How All Timing Will Work
