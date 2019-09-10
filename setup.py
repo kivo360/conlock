@@ -14,7 +14,7 @@ if CURRENT_PYTHON < REQUIRED_PYTHON:
 Unsupported Python version
 ==========================
 
-This version of Django requires Python {}.{}, but you're trying to
+This version of Conlock requires Python {}.{}, but you're trying to
 install it on Python {}.{}.
 
 This may be because you are using a version of pip that doesn't
@@ -66,10 +66,9 @@ def read(fname):
 
 
 setup(
-    name='condolock',
+    name='conlock',
     version=version,
     python_requires='>={}.{}'.format(*REQUIRED_PYTHON),
-    # url='https://www.djangoproject.com/',
     author='Kevin Hill',
     author_email='kah.kevin.hill@gmail.com',
     description=('A high-level Python Web framework that encourages '

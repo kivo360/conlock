@@ -1,4 +1,5 @@
 import abc
+from abc import ABC
 from redis import Redis
 
 
@@ -11,7 +12,7 @@ class RLLogic(object):
         self.__dict__[name] = value
 
 
-class ConditionInstance(abc.ABCMeta):
+class ConditionInstance(ABC):
     def __init__(self, *args, **kwargs):
         self.redis_instance = None
         self.lock_name = ""
@@ -35,3 +36,6 @@ class ConditionInstance(abc.ABCMeta):
             raise NotImplementedError("You should have set a redis instance by now.")
         if self.lock_name == "":
             raise NotImplementedError("This lock needs a name")
+    
+    def close(self, key):
+        raise NotImplementedError("You need to have a process for closing this condition if we've made a recent change.")

@@ -6,20 +6,22 @@ import time
 import uuid
 
 from redis import Redis
+from loguru import logger
 
-from condolock import ConditionalLock, ConditionalLockContext
-from condolock.conditions import WaitAtLeast
+from conlock import ConditionalLock, ConditionalLockContext
+from conlock.conditions import WaitAtLeast
 
 single_hex = uuid.uuid4().hex
 red_instance = Redis()
 clock = ConditionalLock(red_instance)
 clock.add(WaitAtLeast(seconds=10))
-with ConditionalLockContext(key=single_hex, lock=clock):
-    print("cunt")
-with ConditionalLockContext(key=single_hex, lock=clock):
-    print("cunt")
+with ConditionalLockContext(key=single_hex, lock=clock) as context:
+    context.update("Hello World")
 
+with ConditionalLockContext(key=single_hex, lock=clock):
+    context.update("Hello World")
 
+logger.debug("S")
 time.sleep(11)
 with ConditionalLockContext(key=single_hex, lock=clock):
-    print("cunt")
+    context.update("Hello World")

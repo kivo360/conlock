@@ -1,6 +1,6 @@
-# Condolock
+# Conlock - A Distributed Lock ... with Conditions
 
-Stop Redis race conditions in their tracks. `condolock` (standing for `Cond`itional `Lock`) is a distributed conditional lock library for python. Put repeatable conditions on keys and ensure they don't get changed before you say they're supposed to change. 
+Stop Redis race conditions in their tracks. `conlock` (standing for `Con`ditional `Lock`) is a distributed conditional lock library for python. Put repeatable conditions on keys and ensure they don't get changed before you say they're supposed to change. 
 
 
 **Match Conditions Before Changing**

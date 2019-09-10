@@ -7,9 +7,9 @@ name = "pypi"
 econml = "*"
 cloudpickle = "*"
 redis = "*"
-condolock = {editable = true, path = "."}
 loguru = "*"
 maya = "*"
+conlock = {editable = true, path = "."}
 
 [dev-packages]
 
